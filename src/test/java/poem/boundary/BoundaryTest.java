@@ -13,13 +13,14 @@ public class BoundaryTest {
 	private static final String EXPECTED_ENGLISH_POEM = PoemObtainerStub.ENGLISH_POEM;
 	private static final String EXPECTED_GERMAN_POEM = PoemObtainerStub.GERMAN_POEM;
 
-	private Boundary boundary;
 	private EventPublisher eventPublisher;
+	private Object publishedEvent;
+	private Boundary boundary;
 
 	@Before
 	public void setup() {
 		PoemObtainerStub poemObtainerStub = new PoemObtainerStub();
-		eventPublisher = new EventPublisher();
+		eventPublisher = new EventPublisher(event -> publishedEvent = event);
 		boundary = new Boundary(poemObtainerStub, eventPublisher);
 	}
 
@@ -42,13 +43,12 @@ public class BoundaryTest {
 	}
 
 	private void assertPoemIs(String expectedPoemVerse) {
-		String[] actualPoemVerses = getLatestPoemVerses();
+		String[] actualPoemVerses = getPublishedVerses();
 		assertEquals(expectedPoemVerse, actualPoemVerses[0]);
 	}
 
-	private String[] getLatestPoemVerses() {
-		String[] actualPoemVerses = eventPublisher.takeLatestEvent().map(event -> (RandomVersesPicked) event)
-				.map(event -> event.getVerses()).orElse(new String[0]);
+	private String[] getPublishedVerses() {
+		String[] actualPoemVerses = ((RandomVersesPicked)publishedEvent).getVerses();
 		return actualPoemVerses;
 	}
 }

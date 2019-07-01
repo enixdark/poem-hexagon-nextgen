@@ -2,8 +2,8 @@ package poem.simple;
 
 import poem.boundary.Boundary;
 import poem.boundary.EventPublisher;
-import poem.simple.driven_adapter.HardcodedPoemLibrary;
 import poem.simple.driven_adapter.ConsoleWriter;
+import poem.simple.driven_adapter.HardcodedPoemLibrary;
 import poem.simple.driver_adapter.SimulatedUser;
 
 /**
