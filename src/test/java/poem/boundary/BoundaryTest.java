@@ -5,8 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import poem.boundary.internal.domain.Poem;
 import poem.command.AskForPoem;
+import poem.event.RandomVersesPicked;
 import poem.simple.driven_adapter.PoemObtainerStub;
 
 public class BoundaryTest {
@@ -42,8 +42,13 @@ public class BoundaryTest {
 	}
 
 	private void assertPoemIs(String expectedPoemVerse) {
-		String[] actualPoemVerses = eventPublisher.take().map(o -> (Poem)o)
-				.map(p -> p.getVerses()).orElse(new String[0]);
+		String[] actualPoemVerses = getLatestPoemVerses();
 		assertEquals(expectedPoemVerse, actualPoemVerses[0]);
+	}
+
+	private String[] getLatestPoemVerses() {
+		String[] actualPoemVerses = eventPublisher.takeLatestEvent().map(event -> (RandomVersesPicked) event)
+				.map(event -> event.getVerses()).orElse(new String[0]);
+		return actualPoemVerses;
 	}
 }

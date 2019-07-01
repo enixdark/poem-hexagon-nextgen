@@ -2,7 +2,7 @@ package poem.simple.driven_adapter;
 
 import java.util.function.Consumer;
 
-import poem.boundary.internal.domain.Poem;
+import poem.event.RandomVersesPicked;
 
 /**
  * Right-side, driven adapter for writing text to the console.
@@ -13,9 +13,9 @@ import poem.boundary.internal.domain.Poem;
 public class ConsoleWriter implements Consumer<Object> {
 	@Override
 	public void accept(Object eventObject) {
-		if (eventObject instanceof Poem) {
-			Poem poem = (Poem) eventObject;
-			String[] lines = poem.getVerses();
+		if (eventObject instanceof RandomVersesPicked) {
+			RandomVersesPicked event = (RandomVersesPicked) eventObject;
+			String[] lines = event.getVerses();
 			for (String line : lines) {
 				System.out.println(line);
 			}

@@ -10,6 +10,7 @@ import poem.boundary.driven_port.IObtainPoems;
 import poem.boundary.internal.domain.Poem;
 import poem.boundary.internal.domain.RandomPoemPicker;
 import poem.command.AskForPoem;
+import poem.event.RandomVersesPicked;
 
 /**
  * The command handler for displaying a random poem.
@@ -30,8 +31,8 @@ public class PickRandomPoem implements Function<AskForPoem, Object[]> {
 	public Object[] apply(AskForPoem askForPoem) {
 		List<Poem> poems = obtainPoems(askForPoem);
 		Optional<Poem> poem = pickRandomPoem(poems);
-		Object[] poemArray = poemOrEmptyArray(poem);
-		return poemArray;
+		Object[] singleElementArray = getSinglePoemVerses(poem);
+		return singleElementArray;
 	}
 
 	private List<Poem> obtainPoems(AskForPoem askForPoem) {
@@ -45,8 +46,8 @@ public class PickRandomPoem implements Function<AskForPoem, Object[]> {
 		Optional<Poem> randomPoem = randomPoemPicker.pickPoem(poemList);
 		return randomPoem;
 	}
-	
-	private Object[] poemOrEmptyArray(Optional<Poem> poem) {
-		return poem.map(p -> new Object[] { p }).orElse(new Object[0]);
+
+	private Object[] getSinglePoemVerses(Optional<Poem> poem) {
+		return poem.map(p -> new Object[] { new RandomVersesPicked(p.getVerses()) }).orElse(new Object[0]);
 	}
 }

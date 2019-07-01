@@ -4,9 +4,16 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+/**
+ * An event publisher reacts to the events published by the hexagon boundary. It
+ * forwards them to event receivers, and provides the latest processed event.
+ * 
+ * @author b_muth
+ *
+ */
 public class EventPublisher implements Consumer<Object> {
 	private Consumer<Object>[] eventReceivers;
-	private CompletableFuture<Object> singlePublishedEvent;
+	private CompletableFuture<Object> latestPublishedEvent;
 
 	@SafeVarargs
 	public EventPublisher(Consumer<Object>... eventReceivers) {
@@ -19,17 +26,17 @@ public class EventPublisher implements Consumer<Object> {
 		for (Consumer<Object> eventReceiver : eventReceivers) {
 			eventReceiver.accept(eventToBePublished);
 		}
-		singlePublishedEvent.complete(eventToBePublished);
+		latestPublishedEvent.complete(eventToBePublished);
 	}
 
-	public Optional<Object> take() {
-		Object eventObjectOrNull = singlePublishedEvent.getNow(null);
+	public Optional<Object> takeLatestEvent() {
+		Object eventObjectOrNull = latestPublishedEvent.getNow(null);
 		Optional<Object> eventObject = Optional.ofNullable(eventObjectOrNull);
 		clearSinglePublishedEvent();
 		return eventObject;
 	}
 
 	private void clearSinglePublishedEvent() {
-		singlePublishedEvent = new CompletableFuture<>();
+		latestPublishedEvent = new CompletableFuture<>();
 	}
 }
