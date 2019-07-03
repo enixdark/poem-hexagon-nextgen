@@ -24,13 +24,11 @@ import poem.boundary.internal.command_handler.PickRandomPoem;
  *
  */
 public class Boundary implements IReactToCommands {
+	private Model model;
 
-	private ModelRunner modelRunner;
+	public Boundary(IObtainPoems poemObtainer) {
+		model = buildModel(poemObtainer);
 
-	public Boundary(IObtainPoems poemObtainer, Consumer<Object> eventPublisher) {
-		Model model = buildModel(poemObtainer);
-		modelRunner = new ModelRunner().publishWith(eventPublisher);
-		modelRunner.run(model);
 	}
 
 	private Model buildModel(IObtainPoems poemObtainer) {
@@ -44,7 +42,8 @@ public class Boundary implements IReactToCommands {
 	}
 
 	@Override
-	public void reactTo(Object commandObject) {
+	public void reactTo(Object commandObject, Consumer<Object> eventPublisher) {
+		ModelRunner modelRunner = new ModelRunner().publishWith(eventPublisher).run(model);
 		modelRunner.reactTo(commandObject);
 	}
 }

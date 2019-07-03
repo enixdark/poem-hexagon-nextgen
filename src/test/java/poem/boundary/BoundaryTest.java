@@ -21,34 +21,29 @@ public class BoundaryTest {
 	public void setup() {
 		PoemObtainerStub poemObtainerStub = new PoemObtainerStub();
 		eventPublisher = new EventPublisher(event -> publishedEvent = event);
-		boundary = new Boundary(poemObtainerStub, eventPublisher);
+		boundary = new Boundary(poemObtainerStub);
 	}
 
 	@Test
 	public void englishPoem() throws Exception {
-		boundary.reactTo(new AskForPoem("en"));
+		boundary.reactTo(new AskForPoem("en"), eventPublisher);
 		assertPoemIs(EXPECTED_ENGLISH_POEM);
 	}
 
 	@Test
 	public void englishPoemWhenUnknownLanguage() throws Exception {
-		boundary.reactTo(new AskForPoem("fr"));
+		boundary.reactTo(new AskForPoem("fr"), eventPublisher);
 		assertPoemIs(EXPECTED_ENGLISH_POEM);
 	}
 
 	@Test
 	public void germanPoem() throws Exception {
-		boundary.reactTo(new AskForPoem("de"));
+		boundary.reactTo(new AskForPoem("de"), eventPublisher);
 		assertPoemIs(EXPECTED_GERMAN_POEM);
 	}
 
 	private void assertPoemIs(String expectedPoemVerse) {
-		String[] actualPoemVerses = getPublishedVerses();
-		assertEquals(expectedPoemVerse, actualPoemVerses[0]);
-	}
-
-	private String[] getPublishedVerses() {
 		String[] actualPoemVerses = ((RandomVersesPicked)publishedEvent).getVerses();
-		return actualPoemVerses;
+		assertEquals(expectedPoemVerse, actualPoemVerses[0]);
 	}
 }

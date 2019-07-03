@@ -1,5 +1,7 @@
 package poem.boundary.driver_port;
 
+import java.util.function.Consumer;
+
 public interface IReactToCommands{
-	void reactTo(Object command);
+	public void reactTo(Object commandObject, Consumer<Object> eventPublisher);
 }

@@ -26,9 +26,9 @@ public class Main {
 		EventPublisher eventPublisher = new EventPublisher(new ConsoleWriter());
 
 		// Inject driven adapters into boundary
-		Boundary boundary = new Boundary(poemLibrary, eventPublisher);
+		Boundary boundary = new Boundary(poemLibrary);
 
 		// Start the driver adapter for the application
-		new SimulatedUser(boundary).run();
+		new SimulatedUser(boundary, eventPublisher).run();
 	}
 }

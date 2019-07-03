@@ -1,5 +1,6 @@
 package poem.simple.driver_adapter;
 
+import poem.boundary.EventPublisher;
 import poem.boundary.driver_port.IReactToCommands;
 import poem.command.AskForPoem;
 
@@ -14,13 +15,15 @@ import poem.command.AskForPoem;
  */
 public class SimulatedUser {
 	private IReactToCommands driverPort;
+	private EventPublisher eventPublisher;
 
-	public SimulatedUser(IReactToCommands driverPort) {
+	public SimulatedUser(IReactToCommands driverPort, EventPublisher eventPublisher) {
 		this.driverPort = driverPort;
+		this.eventPublisher = eventPublisher;
 	}
 
 	public void run() {
-		driverPort.reactTo(new AskForPoem("en"));
-		driverPort.reactTo(new AskForPoem("de"));
+		driverPort.reactTo(new AskForPoem("en"), eventPublisher);
+		driverPort.reactTo(new AskForPoem("de"), eventPublisher);
 	}
 }
