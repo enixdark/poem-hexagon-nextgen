@@ -1,6 +1,7 @@
 package poem.simple;
 
 import poem.boundary.Boundary;
+import poem.boundary.EventPublisher;
 import poem.simple.driven_adapter.ConsoleWriter;
 import poem.simple.driven_adapter.HardcodedPoemLibrary;
 import poem.simple.driver_adapter.SimulatedUser;
@@ -22,10 +23,10 @@ public class Main {
 	private void startApplication() {
 		// Instantiate driven, right-side adapters
 		HardcodedPoemLibrary poemLibrary = new HardcodedPoemLibrary();
-		ConsoleWriter consoleWriter = new ConsoleWriter();
+		EventPublisher eventPublisher = new EventPublisher(new ConsoleWriter());
 
 		// Inject driven adapters into boundary
-		Boundary boundary = new Boundary(poemLibrary, consoleWriter);
+		Boundary boundary = new Boundary(poemLibrary, eventPublisher);
 
 		// Start the driver adapter for the application
 		new SimulatedUser(boundary).run();
