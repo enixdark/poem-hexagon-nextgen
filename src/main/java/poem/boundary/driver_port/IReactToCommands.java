@@ -11,5 +11,5 @@ public interface IReactToCommands{
 	 * 
 	 * @return a future to access the resulting event
 	 */
-	public CompletableFuture<Void> reactTo(Object commandObject);
+	public CompletableFuture<Object> reactTo(Object commandObject);
 }

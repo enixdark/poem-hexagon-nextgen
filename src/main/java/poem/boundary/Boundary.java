@@ -45,9 +45,9 @@ public class Boundary implements IReactToCommands {
 	}
 
 	@Override
-	public CompletableFuture<Void> reactTo(Object commandObject) {
-		CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> handleCommand(commandObject))
-				.thenAccept(eventPublisher);
+	public CompletableFuture<Object> reactTo(Object commandObject) {
+		CompletableFuture<Object> future = CompletableFuture.supplyAsync(() -> handleCommand(commandObject))
+				.thenApply(this::publishEvent);
 		return future;
 	}
 
@@ -55,5 +55,10 @@ public class Boundary implements IReactToCommands {
 		final CompletableFuture<Object> result = new CompletableFuture<>();
 		new ModelRunner().publishWith(result::complete).run(model).reactTo(commandObject);
 		return result.join();
+	}
+	
+	public Object publishEvent(Object event) {
+		eventPublisher.accept(event);
+		return event;
 	}
 }
