@@ -13,14 +13,14 @@ import poem.command.AskForPoem;
  *
  */
 public class SimulatedUser {
-	private IReactToCommands driverPort;
+	private IReactToCommands boundary;
 
-	public SimulatedUser(IReactToCommands driverPort) {
-		this.driverPort = driverPort; 
+	public SimulatedUser(IReactToCommands boundary) {
+		this.boundary = boundary; 
 	}
 
 	public void run() {
-		driverPort.reactTo(new AskForPoem("en")).join();
-		driverPort.reactTo(new AskForPoem("de")).join();
+		boundary.reactTo(new AskForPoem("en")).join();
+		boundary.reactTo(new AskForPoem("de")).join();
 	}
 }
