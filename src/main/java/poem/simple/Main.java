@@ -25,9 +25,9 @@ public class Main {
 		ConsoleWriter consoleWriter = new ConsoleWriter();
 
 		// Inject driven adapters into boundary
-		Boundary boundary = new Boundary(poemLibrary);
+		Boundary boundary = new Boundary(poemLibrary, consoleWriter);
 
 		// Start the driver adapter for the application
-		new SimulatedUser(boundary, consoleWriter).run();
+		new SimulatedUser(boundary).run();
 	}
 }

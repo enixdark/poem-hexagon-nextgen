@@ -1,5 +1,6 @@
 package poem.boundary;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import org.requirementsascode.Model;
@@ -24,10 +25,12 @@ import poem.boundary.internal.command_handler.PickRandomPoem;
  *
  */
 public class Boundary implements IReactToCommands {
-	private Model model;
+	private final Model model;
+	private final Consumer<Object> eventPublisher;
 
-	public Boundary(IObtainPoems poemObtainer) {
-		model = buildModel(poemObtainer);
+	public Boundary(IObtainPoems poemObtainer, Consumer<Object> eventPublisher) {
+		this.model = buildModel(poemObtainer);
+		this.eventPublisher = eventPublisher;
 
 	}
 
@@ -42,8 +45,15 @@ public class Boundary implements IReactToCommands {
 	}
 
 	@Override
-	public void reactTo(Object commandObject, Consumer<Object> eventPublisher) {
-		ModelRunner modelRunner = new ModelRunner().publishWith(eventPublisher).run(model);
-		modelRunner.reactTo(commandObject);
+	public CompletableFuture<Void> reactTo(Object commandObject) {
+		CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> handleCommand(commandObject))
+				.thenAccept(eventPublisher);
+		return future;
+	}
+
+	private Object handleCommand(Object commandObject) {
+		final CompletableFuture<Object> result = new CompletableFuture<>();
+		new ModelRunner().publishWith(result::complete).run(model).reactTo(commandObject);
+		return result.join();
 	}
 }
