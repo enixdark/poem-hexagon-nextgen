@@ -2,6 +2,8 @@ package poem.boundary;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.function.Consumer;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,32 +15,32 @@ public class BoundaryTest {
 	private static final String EXPECTED_ENGLISH_POEM = PoemObtainerStub.ENGLISH_POEM;
 	private static final String EXPECTED_GERMAN_POEM = PoemObtainerStub.GERMAN_POEM;
 
-	private EventPublisher eventPublisher;
+	private Consumer<Object> eventConsumer;
 	private Object publishedEvent;
 	private Boundary boundary;
 
 	@Before
 	public void setup() {
 		PoemObtainerStub poemObtainerStub = new PoemObtainerStub();
-		eventPublisher = new EventPublisher(event -> publishedEvent = event);
+		eventConsumer = event -> publishedEvent = event;
 		boundary = new Boundary(poemObtainerStub);
 	}
 
 	@Test
 	public void englishPoem() throws Exception {
-		boundary.reactTo(new AskForPoem("en"), eventPublisher);
+		boundary.reactTo(new AskForPoem("en"), eventConsumer);
 		assertPoemIs(EXPECTED_ENGLISH_POEM);
 	}
 
 	@Test
 	public void englishPoemWhenUnknownLanguage() throws Exception {
-		boundary.reactTo(new AskForPoem("fr"), eventPublisher);
+		boundary.reactTo(new AskForPoem("fr"), eventConsumer);
 		assertPoemIs(EXPECTED_ENGLISH_POEM);
 	}
 
 	@Test
 	public void germanPoem() throws Exception {
-		boundary.reactTo(new AskForPoem("de"), eventPublisher);
+		boundary.reactTo(new AskForPoem("de"), eventConsumer);
 		assertPoemIs(EXPECTED_GERMAN_POEM);
 	}
 
