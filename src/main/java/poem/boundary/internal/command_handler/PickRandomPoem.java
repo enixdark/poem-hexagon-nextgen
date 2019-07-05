@@ -18,7 +18,7 @@ import poem.event.RandomVersesPicked;
  * @author b_muth
  *
  */
-public class PickRandomPoem implements Function<AskForPoem, Object[]> {
+public class PickRandomPoem implements Function<AskForPoem, Object> {
 	private IObtainPoems poemObtainer;
 	private RandomPoemPicker randomPoemPicker;
 
@@ -28,11 +28,11 @@ public class PickRandomPoem implements Function<AskForPoem, Object[]> {
 	}
 
 	@Override
-	public Object[] apply(AskForPoem askForPoem) {
+	public Object apply(AskForPoem askForPoem) {
 		List<Poem> poems = obtainPoems(askForPoem);
 		Optional<Poem> poem = pickRandomPoem(poems);
-		Object[] singleElementArray = getSinglePoemVerses(poem);
-		return singleElementArray;
+		RandomVersesPicked event = getRandomVersesPickedEvent(poem);
+		return event;
 	}
 
 	private List<Poem> obtainPoems(AskForPoem askForPoem) {
@@ -47,7 +47,7 @@ public class PickRandomPoem implements Function<AskForPoem, Object[]> {
 		return randomPoem;
 	}
 
-	private Object[] getSinglePoemVerses(Optional<Poem> poem) {
-		return poem.map(p -> new Object[] { new RandomVersesPicked(p.getVerses()) }).orElse(new Object[0]);
+	private RandomVersesPicked getRandomVersesPickedEvent(Optional<Poem> poem) {
+		return poem.map(p -> new RandomVersesPicked(p.getVerses())).orElse(null);
 	}
 }

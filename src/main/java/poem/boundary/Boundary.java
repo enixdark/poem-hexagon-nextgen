@@ -1,5 +1,6 @@
 package poem.boundary;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -52,9 +53,8 @@ public class Boundary implements IReactToCommands {
 	}
 
 	private Object handleCommand(Object commandObject) {
-		final CompletableFuture<Object> result = new CompletableFuture<>();
-		new ModelRunner().publishWith(result::complete).run(model).reactTo(commandObject);
-		return result.join();
+		Optional<Object> publishedEvent = new ModelRunner().run(model).reactTo(commandObject);
+		return publishedEvent.get();
 	}
 	
 	public Object publishEvent(Object event) {

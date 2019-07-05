@@ -20,7 +20,7 @@ import poem.command.AskForPoem;
 class UseCaseModel {
 	private static final Class<AskForPoem> asksForPoem = AskForPoem.class;
 
-	public static Model build(Function<AskForPoem, Object[]> picksRandomPoem) {
+	public static Model build(Function<AskForPoem, Object> picksRandomPoem) {
 		Model model = Model.builder()
 			.user(asksForPoem).systemPublish(picksRandomPoem)
 		.build();
